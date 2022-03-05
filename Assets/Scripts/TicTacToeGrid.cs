@@ -42,10 +42,14 @@ public class TicTacToeGrid : Matrix
     }
     public void SetStatusTurn(int row, int col)
     {
-        TakeTurn(row, col);
-        CellGrid[row][col].SetStatus(currentturn);
-        //CheckWin();
-        //CheckDraw();
+        if (CellGrid[row][col].GetStatus() == Cell.Status.None)
+        {
+            TakeTurn(row, col);
+            CellGrid[row][col].SetStatus(currentturn);
+            //CheckWin();
+            //CheckDraw();
+        }
+
     }
     //public override void onMatrixUpdate()
     //{
@@ -74,88 +78,89 @@ public class TicTacToeGrid : Matrix
             currentturn = Cell.Status.Cross;
         }
     }
+    public void CheckWin()
+    {
+        for (int i = 0; i < base.numberofrows; i++)
+        {
+            rowSame = IsRowSame(i);
+            if (rowSame == true)
+            {
+                checkWin = true;
+                break;
+            }
+            else
+            {
+                checkWin = false;
+            }
+        
+        }   
+        if (!checkWin)
+        {
+           for (int i = 0; i < base.numberofcolumns; i++)
+           {
+              columnSame = IsColSame(i);
+              if (columnSame)
+              {
+                checkWin = true;
+                break;
+              }
+              else
+              {
+                checkWin = false;
+              }
+           }
+        }
+        else if (!checkWin && !columnSame)
+        {
+           diagonalSame = IsDiagonalSame();
+           if (diagonalSame)
+        {
+            checkWin = true;
+        }
+            else 
+            checkWin = false;
+        }
+        else if (!checkWin && !columnSame && !diagonalSame)
+        {
+        inversediagonalSame = IsInverseDiagonalSame();
+        if (inversediagonalSame)
+        {
+            checkWin = true;
+        }
+        else
+            checkWin = false;
+        }
+    }
+    public void CheckDraw()
+    {
+         MatrixCheck();
+         if (!matrixValue)
+         {
+        Debug.Log("Game not end");
+         }
+        else
+        {
+        Debug.Log("Draw");
+        matchDraw = true;
+        }
+    }
+    public void MatrixCheck()
+    {
+        for (int i = 0; i < base.numberofrows; i++)
+        {
+           for (int j = 0; j < base.numberofcolumns; j++)
+           {
+              if (MatrixData[i][j] == 0)
+              {
+                matrixValue = false;
+                break;
+              }
+              else
+                matrixValue = true;
+           }
+        }
+    }
 }
-//    public void CheckWin()
-//    {
-//        for (int i = 0; i <rows ; i++)
-//        {
-//            rowSame = IsRowSame(i);
-//            if (rowSame == true)
-//            {
-//                checkWin = true;
-//                break;
-//            }
-//            else
-//            {
-//                checkWin = false;
-//            }
-//        }
-//        if (!checkWin)
-//        {
-//            for (int i = 0; i <cols; i++)
-//            {
-//                columnSame = IsColSame(i);
-//                if (columnSame)
-//                {
-//                    checkWin = true;
-//                    break;
-//                }
-//                else
-//                {
-//                    checkWin = false;
-//                }
-//            }
-//        }
 
-//        else if (!checkWin && !columnSame)
-//        {
-//            diagonalSame = IsDiagonalSame();
-//            if (diagonalSame)
-//            {
-//                checkWin = true;
-//            }
-//            else
-//                checkWin = false;
-//        }
-//        else if(!checkWin && !columnSame && !diagonalSame)
-//        {
-//            inversediagonalSame = IsInverseDiagonalSame();
-//            if (inversediagonalSame)
-//            {
-//                checkWin = true;
-//            }
-//            else
-//                checkWin = false;
-//        }
-//    }
-//    public void CheckDraw()
-//    {
-//        MatrixCheck();
-//        if (!matrixValue)
-//        {
-//            Debug.Log("Game not end");
-//        }
-//        else
-//        {
-//            Debug.Log("Draw");
-//            matchDraw = true;
-//        }
-//    }
-//    public void MatrixCheck()
-//    {
-//        for (int i = 0; i < rows; i++)
-//        {
-//            for (int j = 0; j < cols; j++)
-//            {
-//                if (MatrixData[i][j] == 0)
-//                {
-//                    matrixValue = false;
-//                    break;
-//                }
-//                else
-//                   matrixValue=true;
-//            }
-//        }
-//    }
 
-//}
+
