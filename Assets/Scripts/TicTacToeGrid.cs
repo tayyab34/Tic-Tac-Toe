@@ -4,14 +4,6 @@ using UnityEngine;
 
 public class TicTacToeGrid : Matrix
 {
-    bool rowSame = false;
-    bool columnSame = false;
-    bool diagonalSame = false;
-    bool inversediagonalSame = false;
-    bool checkWin = false;
-    bool matrixValue = false;
-    bool matchDraw = false;
-
     List<List<Cell>> CellGrid = new List<List<Cell>>();
     Cell.Status currentturn = Cell.Status.Cross;
 
@@ -21,21 +13,21 @@ public class TicTacToeGrid : Matrix
     public delegate void OnCellsDone();
     public event OnCellsDone onCellsDone;
 
-    public TicTacToeGrid(int numberofrows, int numberofcolumns) : base(numberofrows, numberofcolumns)
+    public TicTacToeGrid(int row, int col) : base(row, col)
     {
 
     }
-    public void InitializeCells()
+    public void InitializeCells(int row, int col)
     {
-        for (int i = 0; i < numberofrows; i++)
+        for (int i = 0; i < row; i++)
         {
             CellGrid.Add(new List<Cell>());
-            for (int j = 0; j < numberofcolumns; j++)
+            for (int j = 0; j < col; j++)
             {
                 Cell cell = new Cell(i, j);
                 CellGrid[i].Add(cell);
-                onCellCreated?.Invoke(cell);
-                cell.rowcol += SetStatusTurn;
+                onCellCreated?.Invoke(CellGrid[i][j]);
+                CellGrid[i][j].rowcol += SetStatusTurn;
             }
         }
         onCellsDone?.Invoke();
@@ -46,22 +38,21 @@ public class TicTacToeGrid : Matrix
         {
             TakeTurn(row, col);
             CellGrid[row][col].SetStatus(currentturn);
-            //CheckWin();
-            //CheckDraw();
+            SetElement(row, col, (int)currentturn);
+            CheckWin(row, col);
         }
-
+        
     }
-    //public override void onMatrixUpdate()
-    //{
-    //    for (int i = 0; i < numberofrows; i++)
-    //    {
-    //        for (int j = 0; j < numberofcolumns; j++)
-    //        {
-    //            CellGrid[i][j].SetStatus((Cell.Status)GetElement(i, j));
-    //        }
-
-    //    }
-    //}
+    public override void onMatrixUpdate()
+    {
+        for (int i = 0; i < numofrows; i++)
+        {
+            for (int j = 0; j < numofcolumns; j++)
+            {
+                CellGrid[i][j].SetStatus((Cell.Status)GetElement(i , j));
+            }
+        }
+    }
 
     public void TakeTurn(int row, int col)
     {
@@ -78,89 +69,52 @@ public class TicTacToeGrid : Matrix
             currentturn = Cell.Status.Cross;
         }
     }
-    public void CheckWin()
+  
+    private void CheckWin(int row, int col)
     {
-        for (int i = 0; i < base.numberofrows; i++)
-        {
-            rowSame = IsRowSame(i);
-            if (rowSame == true)
-            {
-                checkWin = true;
-                break;
-            }
-            else
-            {
-                checkWin = false;
-            }
-        
-        }   
-        if (!checkWin)
-        {
-           for (int i = 0; i < base.numberofcolumns; i++)
-           {
-              columnSame = IsColSame(i);
-              if (columnSame)
-              {
-                checkWin = true;
-                break;
-              }
-              else
-              {
-                checkWin = false;
-              }
-           }
-        }
-        else if (!checkWin && !columnSame)
-        {
-           diagonalSame = IsDiagonalSame();
-           if (diagonalSame)
-        {
-            checkWin = true;
-        }
-            else 
-            checkWin = false;
-        }
-        else if (!checkWin && !columnSame && !diagonalSame)
-        {
-        inversediagonalSame = IsInverseDiagonalSame();
-        if (inversediagonalSame)
-        {
-            checkWin = true;
-        }
-        else
-            checkWin = false;
+        CheckRow(row);
+        CheckCol(col);
+        if (row == col)
+            CheckDiagonal();
+        if (row == CellGrid.Count - 1 - col)
+            CheckInverseDiagonal();
+    }
+
+    private void CheckInverseDiagonal()
+    {
+        if (IsInverseDiagonalSame())
+        { 
+            SetInverseDiagonal((int)Cell.Status.Win);
         }
     }
-    public void CheckDraw()
+
+    private void CheckDiagonal()
     {
-         MatrixCheck();
-         if (!matrixValue)
-         {
-        Debug.Log("Game not end");
-         }
-        else
+        if (IsDiagonalSame())
         {
-        Debug.Log("Draw");
-        matchDraw = true;
+            SetDiagonal((int)Cell.Status.Win);
         }
     }
-    public void MatrixCheck()
+
+    private void CheckCol(int col)
     {
-        for (int i = 0; i < base.numberofrows; i++)
+        if (IsColSame(col))
         {
-           for (int j = 0; j < base.numberofcolumns; j++)
-           {
-              if (MatrixData[i][j] == 0)
-              {
-                matrixValue = false;
-                break;
-              }
-              else
-                matrixValue = true;
-           }
+            SetCol(col, (int)Cell.Status.Win);
+        }
+    }
+
+    private void CheckRow(int row)
+    {
+        if (IsRowSame(row))
+        {
+            SetRow(row, (int)Cell.Status.Win);
         }
     }
 }
+
+
+
 
 
 

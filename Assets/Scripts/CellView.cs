@@ -7,13 +7,6 @@ public class CellView : MonoBehaviour
     public GameObject[] cube_status;
     Cell cell = new Cell();
 
-    //public delegate void OnCellInteraction(int row, int col);
-    //public event OnCellInteraction onCellInteraction;
-    public void Start()
-    {
- 
-    }
-
     public void SetStatus(Cell.Status status)
     {
         for (int i = 0; i < cube_status.Length; i++)
@@ -31,9 +24,8 @@ public class CellView : MonoBehaviour
     private void OnMouseDown()
     {
         cell.onStatusUpdate += SetStatus;
-        //onCellInteraction?.Invoke(cell.GetRow(), cell.GetCol());
         cell.CellInteraction();
-        
+
     }
     private void OnDestroy()
     {
@@ -43,5 +35,4 @@ public class CellView : MonoBehaviour
     {
         this.cell = cell;
     }
-
 }

@@ -22,7 +22,7 @@ public class TicTacToeView : MonoBehaviour
         Grid = new TicTacToeGrid(row, col);
         Grid.onCellCreated += OnCellCreated;
         Grid.onCellsDone += AlignGrid;
-        Grid.InitializeCells();
+        Grid.InitializeCells(row,col);
 
     }
     public void OnCellCreated(Cell cell)
@@ -32,6 +32,7 @@ public class TicTacToeView : MonoBehaviour
         GameObject cellview = Instantiate(CellPrefab,Position,CellPrefab.transform.rotation);
         //Cells.Add(cellview);
         cellview.GetComponent<CellView>().SetCell(cell);
+        cellview.GetComponent<CellView>().SetStatus(Cell.Status.None);
         CellCounter++;
 
 

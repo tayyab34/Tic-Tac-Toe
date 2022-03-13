@@ -4,30 +4,27 @@ using UnityEngine;
 
 public class Matrix
 {
-    protected int numberofrows;
-    protected int numberofcolumns;
+    protected int numofrows;
+    protected int numofcolumns;
+    protected int rowsize;
+    protected int colsize;
     protected List<List<float>> MatrixData;
-    void Start()
-    {
 
-    }
-    void Update()
-    {
-
-    }
-    void InitalizeList()
+    void InitalizeMatrix()
     {
         MatrixData = new List<List<float>>();
     }
     public Matrix()
     {
-        InitalizeList();
+        InitalizeMatrix();
     }
     public Matrix(int rows, int columns)
     {
-        numberofrows = rows;
-        numberofcolumns = columns;
-        InitalizeList();
+        numofrows = rows;
+        numofcolumns = columns;
+        rowsize = numofcolumns;
+        colsize = numofrows;
+        InitalizeMatrix();
         for (int i = 0; i < rows; i++)
         {
             MatrixData.Add(new List<float>());
@@ -36,19 +33,21 @@ public class Matrix
                 MatrixData[i].Add(0);
             }
         }
-        onMatrixUpdate();
+       // onMatrixUpdate();
     }
     public void SetMatrix(float[,] arr2D)
     {
-        InitalizeList();
-        numberofrows = arr2D.GetLength(0);
-        numberofcolumns = arr2D.GetLength(1);
-        for (int i = 0; i < numberofrows; i++)
+        InitalizeMatrix();
+        numofrows = arr2D.GetLength(0);
+        numofcolumns = arr2D.GetLength(1);
+        rowsize = numofcolumns;
+        colsize = numofrows;
+        for (int i = 0; i < numofrows; i++)
         {
             MatrixData.Add(new List<float>());
-            for (int j = 0; j < numberofcolumns; j++)
+            for (int j = 0; j < numofcolumns; j++)
             {
-                MatrixData[i].Add(arr2D[numberofrows, numberofcolumns]);
+                MatrixData[i].Add(arr2D[i,j]);
             }
         }
         onMatrixUpdate();
@@ -59,14 +58,12 @@ public class Matrix
     }
     public void PrintMatrix()
     {
-        InitalizeList();
         string display = "";
-        for (int i = 0; i < numberofrows; i++)
+        for (int i = 0; i < numofrows; i++)
         {
-            MatrixData.Add(new List<float>());
-            for (int j = 0; j < numberofcolumns; j++)
+            for (int j = 0; j < numofcolumns; j++)
             {
-                display += MatrixData[numberofrows][numberofcolumns] + " ";
+                display += MatrixData[i][j] + " ";
             }
             display += '\n';
         }
@@ -74,7 +71,8 @@ public class Matrix
     }
     public void SetElement(int r, int c, float value)
     {
-        if (r < numberofrows && c < numberofcolumns)
+
+        if (r < numofrows && c < numofcolumns)
         {
             MatrixData[r][c] = value;
         }
@@ -86,7 +84,7 @@ public class Matrix
     }
     public float GetElement(int r, int c)
     {
-        if (r < numberofrows && c < numberofcolumns)
+        if (r < numofrows && c < numofcolumns)
         {
             return MatrixData[r][c];
         }
@@ -98,9 +96,9 @@ public class Matrix
     }
     public void SetRow(int rowNum, float[] arr)
     {
-        if (arr.Length == numberofrows && rowNum < numberofrows)
+        if (arr.Length == rowsize && rowNum < numofrows)
         {
-            for (int i = 0; i < numberofrows; i++)
+            for (int i = 0; i < rowsize; i++)
             {
                 MatrixData[rowNum][i] = arr[i];
             }
@@ -113,9 +111,9 @@ public class Matrix
     }
     public void SetCol(int ColNum, float[] arr)
     {
-        if (arr.Length == numberofcolumns && ColNum < numberofcolumns)
+        if (arr.Length == colsize && ColNum < numofcolumns)
         {
-            for (int i = 0; i < numberofcolumns; i++)
+            for (int i = 0; i < colsize; i++)
             {
                 MatrixData[i][ColNum] = arr[i];
             }
@@ -127,9 +125,9 @@ public class Matrix
     }
     public void SwapRows(int r1, int r2)
     {
-        if (r1 < numberofrows && r2 < numberofrows)
+        if (r1 < numofrows && r2 < numofrows)
         {
-            for (int i = 0; i < numberofrows; i++)
+            for (int i = 0; i < rowsize; i++)
             {
                 float temp = MatrixData[r1][i];
                 MatrixData[r1][i] = MatrixData[r2][i];
@@ -144,9 +142,9 @@ public class Matrix
     }
     public void SwapCol(int c1, int c2)
     {
-        if (c1 < numberofcolumns && c2 < numberofcolumns)
+        if (c1 < numofcolumns && c2 < numofcolumns)
         {
-            for (int i = 0; i < numberofrows; i++)
+            for (int i = 0; i < colsize; i++)
             {
                 float temp = MatrixData[i][c1];
                 MatrixData[i][c1] = MatrixData[i][c2];
@@ -161,12 +159,12 @@ public class Matrix
     }
     public Matrix Add(Matrix toAdd)
     {
-        if (numberofrows == toAdd.numberofrows && numberofcolumns == toAdd.numberofcolumns)
+        if (rowsize== toAdd.rowsize && colsize == toAdd.colsize)
         {
-            Matrix AddedMatrix = new Matrix(numberofrows, numberofcolumns);
-            for (int i = 0; i < numberofrows; i++)
+            Matrix AddedMatrix = new Matrix(rowsize,colsize);
+            for (int i = 0; i < numofrows; i++)
             {
-                for (int j = 0; j < numberofcolumns; j++)
+                for (int j = 0; j < numofcolumns; j++)
                 {
                     AddedMatrix.SetElement(i, j, GetElement(i, j) + toAdd.GetElement(i, j));
                 }
@@ -181,12 +179,12 @@ public class Matrix
     }
     public Matrix Subtract(Matrix toSubtract)
     {
-        if (numberofrows == toSubtract.numberofrows && numberofcolumns == toSubtract.numberofcolumns)
+        if (rowsize == toSubtract.rowsize && colsize == toSubtract.colsize)
         {
-            Matrix SubtractedMatrix = new Matrix(numberofrows, numberofcolumns);
-            for (int i = 0; i < numberofrows; i++)
+            Matrix SubtractedMatrix = new Matrix(rowsize,colsize);
+            for (int i = 0; i < numofrows; i++)
             {
-                for (int j = 0; j < numberofcolumns; j++)
+                for (int j = 0; j < numofcolumns; j++)
                 {
                     SubtractedMatrix.SetElement(i, j, GetElement(i, j) - toSubtract.GetElement(i, j));
                 }
@@ -201,10 +199,10 @@ public class Matrix
     }
     public float[] GetRow(int rowNum)
     {
-        if (rowNum < numberofrows)
+        if (rowNum < rowsize)
         {
-            float[] Array = new float[rowNum];
-            for (int i = 0; i < numberofrows; i++)
+            float[] Array = new float[rowsize];
+            for (int i = 0; i < numofrows; i++)
             {
                 Array[i] = MatrixData[rowNum][i];
             }
@@ -219,10 +217,10 @@ public class Matrix
     }
     public float[] GetCol(int colNum)
     {
-        if (colNum < numberofcolumns)
+        if (colNum < colsize)
         {
-            float[] Array = new float[colNum];
-            for (int i = 0; i < numberofcolumns; i++)
+            float[] Array = new float[colsize];
+            for (int i = 0; i < numofcolumns; i++)
             {
                 Array[i] = MatrixData[i][colNum];
             }
@@ -254,11 +252,11 @@ public class Matrix
     }
     public Matrix Multiply(Matrix toMultiply)
     {
-        Matrix MultipliedMatrix = new Matrix(numberofrows, numberofcolumns);
+        Matrix MultipliedMatrix = new Matrix(rowsize,colsize);
 
-            for (int i = 0; i < numberofrows; i++)
+            for (int i = 1; i < numofrows; i++)
             {
-                for (int j = 0; j < toMultiply.numberofcolumns; j++)
+                for (int j = 1; j < toMultiply.numofcolumns; j++)
                 {
                     MultipliedMatrix.SetElement(i, j, AddArrayMultiples(GetRow(i),toMultiply.GetCol(j)));
                 }
@@ -274,11 +272,11 @@ public class Matrix
     }
     public void SetMatrix(int num)
     {
-        InitalizeList();
-        for (int i = 0; i < numberofrows; i++)
+        InitalizeMatrix();
+        for (int i = 0; i < numofrows; i++)
         {
             MatrixData.Add(new List<float>());
-            for (int j = 0; j < numberofcolumns; j++)
+            for (int j = 0; j < numofcolumns; j++)
             {
                 MatrixData[i].Add(num);
             }
@@ -287,9 +285,9 @@ public class Matrix
     }
     public void SetRow(int rowNum,int num)
     {
-        if (rowNum < numberofrows)
+        if (rowNum < rowsize)
         {
-            for (int i = 0; i < numberofrows; i++)
+            for (int i = 0; i < numofrows; i++)
             {
                 MatrixData[rowNum][i] = num;
             }
@@ -302,9 +300,9 @@ public class Matrix
     }
     public void SetCol(int ColNum, int num)
     {
-        if (ColNum < numberofcolumns)
+        if (ColNum < colsize)
         {
-            for (int i = 0; i < numberofcolumns; i++)
+            for (int i = 0; i < numofcolumns; i++)
             {
                 MatrixData[i][ColNum] = num;
             }
@@ -317,10 +315,8 @@ public class Matrix
     }
     public void SetDiagonal(int num)
     {
-        InitalizeList();
-        for (int i = 0; i < numberofrows; i++)
+        for (int i = 0; i < numofrows; i++)
         {
-            MatrixData.Add(new List<float>());
             for (int j = i; j <=i; j++)
             {
                 MatrixData[i][j] = num;
@@ -330,11 +326,9 @@ public class Matrix
     }
     public void SetInverseDiagonal(int num)
     {
-        InitalizeList();
-        for (int i = 0; i < numberofrows; i++)
+        for (int i = 0; i < numofrows; i++)
         {
-            MatrixData.Add(new List<float>());
-            for (int j =numberofcolumns-i-1; j >= numberofcolumns-i-1; j--)
+            for (int j =numofcolumns-i-1; j >= numofcolumns-i-1; j--)
             {
                 MatrixData[i][j] = num;
             }
@@ -344,7 +338,7 @@ public class Matrix
     public bool IsRowSame(int rowNum)
     {
         bool isrowsame = true;
-        for (int i= 0; i < numberofrows; i++)
+        for (int i= 0; i < numofrows-1; i++)
         {
             if (MatrixData[rowNum][i] != MatrixData[rowNum][i+1])
             {
@@ -356,9 +350,9 @@ public class Matrix
     public bool IsColSame(int ColNum)
     {
         bool iscolsame = true;
-        for (int i = 0; i < numberofcolumns; i++)
+        for (int i = 0; i <numofcolumns-1; i++)
         {
-            if (MatrixData[i][ColNum] != MatrixData[ColNum][i + 1])
+            if (MatrixData[i][ColNum] != MatrixData[i+1][ColNum])
             {
                 iscolsame = false;
             }
@@ -368,10 +362,8 @@ public class Matrix
     public bool IsDiagonalSame()
     {
         bool isdiagonalsame =true;
-        InitalizeList();
-        for (int i = 0; i < numberofrows; i++)
+        for (int i = 0; i < numofrows-1; i++)
         {
-            MatrixData.Add(new List<float>());
             for (int j = i; j <= i; j++)
             {
                 if(MatrixData[i][j] != MatrixData[i + 1][j + 1])
@@ -385,11 +377,9 @@ public class Matrix
     public bool IsInverseDiagonalSame()
     {
         bool isinversediagonalsame = true;
-        InitalizeList();
-        for (int i = 0; i < numberofrows; i++)
+        for (int i = 0; i < numofrows-1; i++)
         {
-            MatrixData.Add(new List<float>());
-            for (int j = numberofcolumns - i - 1; j >= numberofcolumns - i - 1; j--)
+            for (int j = numofcolumns - i - 1; j >= numofcolumns - i - 1; j--)
             {
                 if(MatrixData[i][j] != MatrixData[i + 1][j-1])
                 {

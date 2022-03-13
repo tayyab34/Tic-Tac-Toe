@@ -16,22 +16,23 @@ public class Cell
 
     public enum Status { None, Cross, Circle, Win, Lose }
 
-    public void InitializeCell()
+    public Cell()
     {
         row = 0;
         col = 0;
         this.status = Status.None;
-    }
-
-    public Cell()
-    {
-        //InitializeCell();
     }
     public Cell(int row, int col)
     {
         this.row = row;
         this.col = col;
         this.status = Status.None;
+    }
+    public Cell(int row, int col, Status status)
+    {
+        this.row = row;
+        this.col = col;
+        this.status = status;
     }
     public void CellInteraction()
     {
@@ -44,7 +45,6 @@ public class Cell
     }
     public Status GetStatus()
     {
-
         return status;
     }
     public void SetRow(int row)
@@ -57,12 +57,10 @@ public class Cell
     }
     public int GetRow()
     {
-
         return row;
     }
     public int GetCol()
     {
-
         return col;
     }
 }
